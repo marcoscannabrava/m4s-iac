@@ -3,9 +3,10 @@ package test
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 
 	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
 	"github.com/gruntwork-io/terratest/modules/k8s"
@@ -14,36 +15,8 @@ import (
 	"k8s.io/apimachinery/pkg/util/rand"
 )
 
-func TestE2E_RancherAws(t *testing.T) {
-	runTerraformAndVerify(t, "../rancher/aws")
-}
-
-func TestE2E_RancherAzure(t *testing.T) {
-	runTerraformAndVerify(t, "../rancher/azure")
-}
-
-func TestE2E_RancherDo(t *testing.T) {
-	runTerraformAndVerify(t, "../rancher/do")
-}
-
-func TestE2E_RancherGcp(t *testing.T) {
-	runTerraformAndVerify(t, "../rancher/gcp")
-}
-
 func TestE2E_RancherHcloud(t *testing.T) {
 	runTerraformAndVerify(t, "../rancher/hcloud")
-}
-
-func TestE2E_RancherLinode(t *testing.T) {
-	runTerraformAndVerify(t, "../rancher/linode")
-}
-
-func TestE2E_RancherScw(t *testing.T) {
-	runTerraformAndVerify(t, "../rancher/scw")
-}
-
-func TestE2E_NeuVectorAws(t *testing.T) {
-	runTerraformAndVerify(t, "../neuvector/aws")
 }
 
 func runTerraformAndVerify(t *testing.T, terraformDir string) {

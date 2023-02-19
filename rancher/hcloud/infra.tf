@@ -1,8 +1,7 @@
 # HCloud infrastructure resources
 
 resource "tls_private_key" "global_key" {
-  algorithm = "RSA"
-  rsa_bits  = 2048
+  algorithm = "ED25519"
 }
 
 resource "local_sensitive_file" "ssh_private_key_pem" {
@@ -37,7 +36,7 @@ resource "hcloud_ssh_key" "quickstart_ssh_key" {
 # HCloud Instance for creating a single node RKE cluster and installing the Rancher server
 resource "hcloud_server" "rancher_server" {
   name        = "${var.prefix}-rancher-server"
-  image       = "ubuntu-20.04"
+  image       = "ubuntu-22.04"
   server_type = var.instance_type
   location    = var.hcloud_location
   ssh_keys    = [hcloud_ssh_key.quickstart_ssh_key.id]
@@ -87,42 +86,44 @@ module "rancher_common" {
   workload_cluster_name       = "quickstart-hcloud-custom"
 }
 
+
+# TODO: for starters, we're tunning everything in the same node as rancher_server
 # HCloud instance for creating a single node workload cluster
-resource "hcloud_server" "quickstart_node" {
-  name        = "${var.prefix}-worker"
-  image       = "ubuntu-20.04"
-  server_type = var.instance_type
-  location    = var.hcloud_location
-  ssh_keys    = [hcloud_ssh_key.quickstart_ssh_key.id]
+# resource "hcloud_server" "quickstart_node" {
+#   name        = "${var.prefix}-worker"
+#   image       = "ubuntu-22.04"
+#   server_type = var.instance_type
+#   location    = var.hcloud_location
+#   ssh_keys    = [hcloud_ssh_key.quickstart_ssh_key.id]
 
-  network {
-    network_id = hcloud_network.private.id
-  }
+#   network {
+#     network_id = hcloud_network.private.id
+#   }
 
-  user_data = templatefile(
-    "${path.module}/files/userdata_quickstart_node.template",
-    {
-      username         = local.node_username
-      register_command = module.rancher_common.custom_cluster_command
-    }
-  )
+#   user_data = templatefile(
+#     "${path.module}/files/userdata_quickstart_node.template",
+#     {
+#       username         = local.node_username
+#       register_command = module.rancher_common.custom_cluster_command
+#     }
+#   )
 
-  provisioner "remote-exec" {
-    inline = [
-      "echo 'Waiting for cloud-init to complete...'",
-      "cloud-init status --wait > /dev/null",
-      "echo 'Completed cloud-init!'",
-    ]
+#   provisioner "remote-exec" {
+#     inline = [
+#       "echo 'Waiting for cloud-init to complete...'",
+#       "cloud-init status --wait > /dev/null",
+#       "echo 'Completed cloud-init!'",
+#     ]
 
-    connection {
-      type        = "ssh"
-      host        = self.ipv4_address
-      user        = local.node_username
-      private_key = tls_private_key.global_key.private_key_pem
-    }
-  }
+#     connection {
+#       type        = "ssh"
+#       host        = self.ipv4_address
+#       user        = local.node_username
+#       private_key = tls_private_key.global_key.private_key_pem
+#     }
+#   }
 
-  depends_on = [
-    hcloud_network_subnet.private
-  ]
-}
+#   depends_on = [
+#     hcloud_network_subnet.private
+#   ]
+# }
