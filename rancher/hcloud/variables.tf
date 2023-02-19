@@ -8,7 +8,7 @@ variable "hcloud_token" {
 variable "hcloud_location" {
   type        = string
   description = "Hetzner location used for all resources"
-  default     = "fsn1"
+  default     = "hil"
 }
 
 variable "prefix" {
@@ -32,31 +32,31 @@ variable "network_ip_range" {
 variable "network_zone" {
   type        = string
   description = "Zone to create the network in"
-  default     = "eu-central"
+  default     = "us-west"
 }
 
 variable "instance_type" {
   type        = string
   description = "Type of instance to be used for all instances"
-  default     = "cx21"
+  default     = "cpx21"
 }
 
 variable "rancher_kubernetes_version" {
   type        = string
   description = "Kubernetes version to use for Rancher server cluster"
-  default     = "v1.23.14+k3s1"
+  default     = "v1.23.16+k3s1"
 }
 
 variable "workload_kubernetes_version" {
   type        = string
   description = "Kubernetes version to use for managed workload cluster"
-  default     = "v1.23.14+rke2r1"
+  default     = "v1.23.16+k3s1"
 }
 
 variable "cert_manager_version" {
   type        = string
   description = "Version of cert-manager to install alongside Rancher (format: 0.0.0)"
-  default     = "1.10.0"
+  default     = "1.11.0"
 }
 
 variable "rancher_version" {

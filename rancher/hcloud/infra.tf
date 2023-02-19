@@ -5,13 +5,13 @@ resource "tls_private_key" "global_key" {
 }
 
 resource "local_sensitive_file" "ssh_private_key_pem" {
-  filename        = "${path.module}/id_rsa"
+  filename        = "${path.module}/ed_25519"
   content         = tls_private_key.global_key.private_key_pem
   file_permission = "0600"
 }
 
 resource "local_file" "ssh_public_key_openssh" {
-  filename = "${path.module}/id_rsa.pub"
+  filename = "${path.module}/ed_25519.pub"
   content  = tls_private_key.global_key.public_key_openssh
 }
 
@@ -82,8 +82,8 @@ module "rancher_common" {
   rancher_server_dns = join(".", ["rancher", hcloud_server.rancher_server.ipv4_address, "sslip.io"])
   admin_password     = var.rancher_server_admin_password
 
-  workload_kubernetes_version = var.workload_kubernetes_version
-  workload_cluster_name       = "quickstart-hcloud-custom"
+  # workload_kubernetes_version = var.workload_kubernetes_version
+  # workload_cluster_name       = "quickstart-hcloud-custom"
 }
 
 
