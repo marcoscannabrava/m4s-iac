@@ -41,7 +41,7 @@ variable "instance_type" {
   default     = "cpx21"
 }
 
-variable "rancher_kubernetes_version" {
+variable "kubernetes_version" {
   type        = string
   description = "Kubernetes version to use for Rancher server cluster"
   default     = "v1.23.16+k3s1"

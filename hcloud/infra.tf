@@ -33,9 +33,9 @@ resource "hcloud_ssh_key" "quickstart_ssh_key" {
   public_key = tls_private_key.global_key.public_key_openssh
 }
 
-# HCloud Instance for creating a single node RKE cluster and installing the Rancher server
-resource "hcloud_server" "rancher_server" {
-  name        = "${var.prefix}-rancher-server"
+# HCloud Instance for creating a single node RKE cluster and installing the portainer server
+resource "hcloud_server" "portainer_server" {
+  name        = "${var.prefix}-portainer-server"
   image       = "ubuntu-22.04"
   server_type = var.instance_type
   location    = var.hcloud_location
@@ -65,29 +65,29 @@ resource "hcloud_server" "rancher_server" {
   ]
 }
 
-# Rancher resources
-module "rancher_common" {
-  source = "../rancher-common"
+# portainer resources
+module "portainer_common" {
+  source = "../portainer"
 
-  node_public_ip             = hcloud_server.rancher_server.ipv4_address
-  node_internal_ip           = one(hcloud_server.rancher_server.network[*]).ip
+  node_public_ip             = hcloud_server.portainer_server.ipv4_address
+  node_internal_ip           = one(hcloud_server.portainer_server.network[*]).ip
   node_username              = local.node_username
   ssh_private_key_pem        = tls_private_key.global_key.private_key_pem
-  rancher_kubernetes_version = var.rancher_kubernetes_version
+  portainer_kubernetes_version = var.portainer_kubernetes_version
 
   cert_manager_version    = var.cert_manager_version
-  rancher_version         = var.rancher_version
-  rancher_helm_repository = var.rancher_helm_repository
+  portainer_version         = var.portainer_version
+  portainer_helm_repository = var.portainer_helm_repository
 
-  rancher_server_dns = join(".", ["rancher", hcloud_server.rancher_server.ipv4_address, "sslip.io"])
-  admin_password     = var.rancher_server_admin_password
+  portainer_server_dns = join(".", ["portainer", hcloud_server.portainer_server.ipv4_address, "sslip.io"])
+  admin_password     = var.portainer_server_admin_password
 
   # workload_kubernetes_version = var.workload_kubernetes_version
   # workload_cluster_name       = "quickstart-hcloud-custom"
 }
 
 
-# TODO: for starters, we're tunning everything in the same node as rancher_server
+# TODO: for starters, we're tunning everything in the same node as portainer_server
 # HCloud instance for creating a single node workload cluster
 # resource "hcloud_server" "quickstart_node" {
 #   name        = "${var.prefix}-worker"
@@ -104,7 +104,7 @@ module "rancher_common" {
 #     "${path.module}/files/userdata_quickstart_node.template",
 #     {
 #       username         = local.node_username
-#       register_command = module.rancher_common.custom_cluster_command
+#       register_command = module.portainer_common.custom_cluster_command
 #     }
 #   )
 

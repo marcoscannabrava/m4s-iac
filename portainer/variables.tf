@@ -24,7 +24,7 @@ variable "ssh_private_key_pem" {
   description = "Private key used for SSH access to the Rancher server cluster node"
 }
 
-variable "rancher_kubernetes_version" {
+variable "kubernetes_version" {
   type        = string
   description = "Kubernetes version to use for Rancher server cluster"
   default     = "v1.23.14+k3s1"
