@@ -1,5 +1,6 @@
 # HCloud infrastructure resources
 
+# Create SSH Key --- BEGIN
 resource "tls_private_key" "global_key" {
   algorithm = "ED25519"
 }
@@ -14,6 +15,7 @@ resource "local_file" "ssh_public_key_openssh" {
   filename = "${path.module}/ed_25519.pub"
   content  = tls_private_key.global_key.public_key_openssh
 }
+# Create SSH Key --- END
 
 resource "hcloud_network" "private" {
   name     = "${var.prefix}-private-network"

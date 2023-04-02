@@ -1,13 +1,22 @@
-# IaC repo for a Simple Rancher-managed K3s Installation on Hetzner Cloud
+# IaC repo for m4s server on Hetzner
 
-```sh
 # Quickstart
-# 1. Rename terraform.tfvars.example to terraform.tfvars and edit the variables
-# 2. Run commands below
-cd rancher/hcloud
+```sh
+cd hcloud
 terraform init
 terraform plan # check if resources are what you'd expect
 terraform apply
-
-# 3. Log in to the `rancher_server_url` shown at the end with the `admin` user and the password you defined in `rancher_server_admin_password`
 ```
+
+# TODO
+- infra-configuration: 
+  - install `nginx`, `docker`, `docker-compose`
+- set up cicd:
+  - add github credentials to hetzner
+  - goal: it should be possible for a github action to ssh and run these deploy commands
+    - `cd to /apps, clone git repo if not exists`
+    - `cd into it, pull from git repo`
+    - `run docker-compose up -d --build`
+
+# Reference
+[Terraform Registry - Github SSH Key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/user_ssh_key)
