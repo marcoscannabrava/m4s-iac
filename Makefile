@@ -1,5 +1,5 @@
-PROVIDERS = rancher/rancher-common rancher/hcloud
-CLOUD_PROVIDERS = rancher/hcloud
+PROVIDERS = hcloud
+CLOUD_PROVIDERS = hcloud
 
 upgrade-targets = $(addprefix upgrade-, $(PROVIDERS))
 docs-targets = $(addprefix docs-, $(PROVIDERS))
@@ -38,4 +38,4 @@ test:
 
 .PHONY: clean
 clean:
-	rm */*/terraform.tfstate.backup
+	rm **/terraform.tfstate.backup

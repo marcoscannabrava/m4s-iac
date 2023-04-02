@@ -15,8 +15,8 @@ import (
 	"k8s.io/apimachinery/pkg/util/rand"
 )
 
-func TestE2E_RancherHcloud(t *testing.T) {
-	runTerraformAndVerify(t, "../rancher/hcloud")
+func TestE2E_m4sHcloud(t *testing.T) {
+	runTerraformAndVerify(t, "../hcloud")
 }
 
 func runTerraformAndVerify(t *testing.T, terraformDir string) {
@@ -35,11 +35,11 @@ func runTerraformAndVerify(t *testing.T, terraformDir string) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	rancherServerURL := terraform.Output(t, terraformOptions, "rancher_server_url")
+	m4sServerURL := terraform.Output(t, terraformOptions, "m4s_server_url")
 
 	http_helper.HttpGetWithRetryWithCustomValidation(
 		t,
-		rancherServerURL,
+		m4sServerURL,
 		&tls.Config{
 			InsecureSkipVerify: true,
 		},
@@ -56,11 +56,11 @@ func runTerraformAndVerify(t *testing.T, terraformDir string) {
 
 	k8s.WaitUntilAllNodesReady(t, k8sOptions, 10, 5*time.Second)
 
-	rancherPods := k8s.ListPods(t, k8sOptions, metav1.ListOptions{})
+	m4sPods := k8s.ListPods(t, k8sOptions, metav1.ListOptions{})
 
-	assert.Greater(t, len(rancherPods), 0)
+	assert.Greater(t, len(m4sPods), 0)
 
-	for _, rancherPod := range rancherPods {
-		k8s.WaitUntilPodAvailable(t, k8sOptions, rancherPod.Name, 10, 5*time.Second)
+	for _, m4sPod := range m4sPods {
+		k8s.WaitUntilPodAvailable(t, k8sOptions, m4sPod.Name, 10, 5*time.Second)
 	}
 }
