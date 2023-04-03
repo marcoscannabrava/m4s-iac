@@ -1,5 +1,5 @@
-PROVIDERS = hcloud
-CLOUD_PROVIDERS = hcloud
+PROVIDERS = infra/hcloud
+CLOUD_PROVIDERS = infra/hcloud
 
 upgrade-targets = $(addprefix upgrade-, $(PROVIDERS))
 docs-targets = $(addprefix docs-, $(PROVIDERS))

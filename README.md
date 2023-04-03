@@ -11,12 +11,14 @@ terraform apply
 # TODO
 - infra-configuration: 
   - install `nginx`, `docker`, `docker-compose`
+- start nginx
 - set up cicd:
   - add github credentials to hetzner
   - goal: it should be possible for a github action to ssh and run these deploy commands
     - `cd to /apps, clone git repo if not exists`
     - `cd into it, pull from git repo`
     - `run docker-compose up -d --build`
+    - + adds nginx.conf file and restarts nginx service
 
 # Reference
 [Terraform Registry - Github SSH Key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/user_ssh_key)

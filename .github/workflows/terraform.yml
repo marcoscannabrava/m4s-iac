@@ -13,7 +13,7 @@ jobs:
     
     strategy:
       matrix:
-       provider: ['m4s/hcloud']
+       provider: ['infra/hcloud']
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:

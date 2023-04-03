@@ -1,0 +1,6 @@
+[m4s]
+subdomain.example.com
+
+[m4s:vars]
+ansible_user=myuser
+cert_admin_email=webmaster@example.com
