@@ -14,11 +14,11 @@ $(upgrade-targets): upgrade-%: %
 
 docs: $(docs-targets)
 $(docs-targets): docs-%: %
-	cd $< && terraform-docs -c ../../.terraform-docs-readme.yml .
+	cd $< && terraform-docs -c ../.terraform-docs-readme.yml .
 
 tfvars: $(tfvars-targets)
 $(tfvars-targets): tfvars-%: %
-	cd $< && terraform-docs -c ../../.terraform-docs-tfvars.yml .
+	cd $< && terraform-docs -c ../.terraform-docs-tfvars.yml .
 
 fmt: $(fmt-targets)
 $(fmt-targets): fmt-%: %

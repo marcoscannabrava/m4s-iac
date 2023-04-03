@@ -25,5 +25,8 @@ vagrant/local_config.yaml
 # Terraform plan files
 *.tfplan
 
+# SSH keys
+*ed_25519*
+
 # scratchpad files
 .scratch
