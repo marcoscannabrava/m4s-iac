@@ -2,14 +2,34 @@
 
 # Quickstart
 
-1. Install Requirements
+1. [Install Requirements](#requirements-installation)
    1. Terraform
    2. Ansible
 2. Set up Environment Variables
    1. `hcloud/terraform.tfvars.example` --> `hcloud/terraform.tfvars`
    2. `server/inventory.example` --> `server/inventory`
-3. Run commands below
+3. [Run Terraform to provision infra and Ansible to configure server](#provision-commands)
 
+
+## Requirements Installation
+```sh
+# Terraform
+sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+wget -O- https://apt.releases.hashicorp.com/gpg | \
+gpg --dearmor | \
+sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+sudo tee /etc/apt/sources.list.d/hashicorp.list
+
+sudo apt update
+sudo apt install terraform
+
+# Ansible
+python3 -m pip install ansible
+```
+
+## Provision commands
 ```sh
 M4S_DIR=`pwd`
 
@@ -26,8 +46,14 @@ ansible-playbook -i inventory main.yml
 ```
 
 ___
+___
 
 # TODO
+
+# WIP:
+setting up SSH keys for Ansible
+[Connection methods and details &mdash; Ansible Documentation](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html#:~:text=Ansible%20precedence%20rules.-,Setting%20up%20SSH%20keys,%2D%2Dask%2Dbecome%2Dpass%20.)
+
 ## Ansible configuration: 
 - install `nginx`, `docker`, `docker-compose`
 - start nginx
@@ -38,6 +64,8 @@ ___
     - `cd into it, pull from git repo`
     - `run docker-compose up -d --build`
     - + adds nginx.conf file and restarts nginx service
+
+
 
 # Reference
 [Terraform Registry - Github SSH Key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/user_ssh_key)
