@@ -7,13 +7,13 @@ resource "tls_private_key" "global_key" {
 }
 
 resource "local_sensitive_file" "ssh_private_key_openssh" {
-  filename        = "${path.module}/${var.prefix}.pk"
+  filename        = "${path.module}/${var.prefix}_id_rsa"
   content         = tls_private_key.global_key.private_key_openssh
   file_permission = "0600"
 }
 
 resource "local_file" "ssh_public_key_openssh" {
-  filename = "${path.module}/${var.prefix}.pub"
+  filename = "${path.module}/${var.prefix}_id_rsa.pub"
   content  = tls_private_key.global_key.public_key_openssh
 }
 
@@ -46,52 +46,47 @@ resource "hcloud_server" "m4s_server" {
     network_id = hcloud_network.private.id
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "echo 'Waiting for cloud-init to complete...'",
-      "cloud-init status --wait > /dev/null",
-      "echo 'Completed cloud-init!'",
-    ]
-
-    connection {
-      type        = "ssh"
-      host        = self.ipv4_address
-      user        = local.node_username
-      private_key = tls_private_key.global_key.private_key_openssh
-    }
-  }
-
   depends_on = [
     hcloud_network_subnet.private
   ]
 }
 
-# Ansible Integration
-resource "null_resource" "ansible_configuration" {
-  
+# Setup SSH Config — required for Ansible Step
+resource "null_resource" "ssh_setup" {
+
   triggers = {
-    always_run = "${timestamp()}"
+    prefix = var.prefix
+    host_ip = hcloud_server.m4s_server.ipv4_address
+    ssh_key = tls_private_key.global_key.private_key_openssh
   }
 
-  # Add Host to SSH Config
-    provisioner "local-exec" {
-      command = <<EOF
+  # Remove Host from known_hosts and Add Credentials to SSH Config
+  provisioner "local-exec" {
+    command = <<EOF
+ssh-keygen -f ~/.ssh/known_hosts -R ${hcloud_server.m4s_server.ipv4_address} &&
 cat <<EOT >> ~/.ssh/config
 
 Host ${var.prefix}
   HostName ${hcloud_server.m4s_server.ipv4_address}
   User root
-  IdentityFile ${path.module}/${var.prefix}.pk
+  IdentityFile ${abspath(path.module)}/${var.prefix}_id_rsa
   IdentitiesOnly yes
 EOT
 EOF
-    }
+  }
+}
 
+# Ansible Integration
+resource "null_resource" "ansible_configuration" {
+
+  triggers = {
+    always_run = "${timestamp()}"
+  }
 
   # Prepare Ansible Inventory
   provisioner "local-exec" {
     working_dir = "../server"
-    command = <<EOF
+    command     = <<EOF
 sed -e 's/host_prefix/${var.prefix}/' \
 -e 's/host_ip/${hcloud_server.m4s_server.ipv4_address}/' \
 -e 's/host_user/${local.node_username}/' \
@@ -103,9 +98,9 @@ EOF
   # Install Ansible Galaxy Roles and run Ansible Playbook
   provisioner "local-exec" {
     working_dir = "../server"
-    command = <<EOF
+    command     = <<EOF
 ansible-galaxy install -r requirements.yml &&
-ansible-playbook -i inventory -u root --private-key ../hcloud/${var.prefix}.pk main.yml
+ansible-playbook -i inventory -u root --private-key ../hcloud/${var.prefix}_id_rsa main.yml
 EOF
   }
 
