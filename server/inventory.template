@@ -1,0 +1,6 @@
+[host_prefix]
+host_ip
+
+[host_prefix:vars]
+ansible_user=host_user
+cert_admin_email=host_admin_email

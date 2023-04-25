@@ -1,12 +1,14 @@
-
 # Hetzner Cloud API token used to create infrastructure
 hcloud_token = ""
 
 # Hetzner location used for all resources
 hcloud_location = "hil"
 
-# Type of instance to be used for all instances
-instance_type = "cpx21"
+# Image to be used for all instances - https://docs.hetzner.cloud/#images
+hcloud_image = "ubuntu-22.04"
+
+# Type of instance to be used for all instances - https://docs.hetzner.cloud/#servers
+hcloud_server = "cpx21"
 
 # Network to create for private communication
 network_cidr = "10.0.0.0/8"
@@ -19,3 +21,6 @@ network_zone = "us-west"
 
 # Prefix added to names of all resources
 prefix = "quickstart"
+
+# Administrator Email
+admin_email = "admin_email@domain.com"

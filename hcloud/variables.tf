@@ -17,6 +17,12 @@ variable "prefix" {
   default     = "quickstart"
 }
 
+variable "admin_email" {
+  type        = string
+  description = "Email of the admin to be configured for the SSL Certificate in the Ansible Playbook"
+  default     = "example@mail.com"
+}
+
 variable "network_cidr" {
   type        = string
   description = "Network to create for private communication"
@@ -35,10 +41,16 @@ variable "network_zone" {
   default     = "us-west"
 }
 
-variable "instance_type" {
+variable "hcloud_server" {
   type        = string
   description = "Type of instance to be used for all instances"
   default     = "cpx21"
+}
+
+variable "hcloud_image" {
+  type        = string
+  description = "System image to be used for all instances"
+  default     = "ubuntu-22.04"
 }
 
 # Local variables used to reduce repetition

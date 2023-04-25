@@ -39,7 +39,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_hcloud_token"></a> [hcloud\_token](#input\_hcloud\_token) | Hetzner Cloud API token used to create infrastructure | `string` | n/a | yes |
 | <a name="input_hcloud_location"></a> [hcloud\_location](#input\_hcloud\_location) | Hetzner location used for all resources | `string` | `"hil"` | no |
-| <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Type of instance to be used for all instances | `string` | `"cpx21"` | no |
+| <a name="input_hcloud_server"></a> [instance\_type](#input\_instance\_type) | Type of instance to be used for all instances | `string` | `"cpx21"` | no |
 | <a name="input_network_cidr"></a> [network\_cidr](#input\_network\_cidr) | Network to create for private communication | `string` | `"10.0.0.0/8"` | no |
 | <a name="input_network_ip_range"></a> [network\_ip\_range](#input\_network\_ip\_range) | Subnet to create for private communication. Must be part of the CIDR defined in `network_cidr`. | `string` | `"10.0.1.0/24"` | no |
 | <a name="input_network_zone"></a> [network\_zone](#input\_network\_zone) | Zone to create the network in | `string` | `"us-west"` | no |

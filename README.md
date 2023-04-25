@@ -1,19 +1,19 @@
 # IaC repo for m4s server on Hetzner
 
+This server runs on a single Hetzner Cloud instance and hosts a blog, [m4s.dev](https://m4s.dev/), and a few other apps.
+
 # Quickstart
 
 1. [Install Requirements](#requirements-installation)
    1. Terraform
    2. Ansible
-2. Set up Environment Variables
-   1. `hcloud/terraform.tfvars.example` --> `hcloud/terraform.tfvars`
-   2. `server/inventory.example` --> `server/inventory`
-3. [Run Terraform to provision infra and Ansible to configure server](#provision-commands)
+2. Set up Environment Variables: `hcloud/terraform.tfvars.example` --> `hcloud/terraform.tfvars`
+3. Run: `terraform init && terraform apply`
 
 
 ## Requirements Installation
 ```sh
-# Terraform
+# Install Terraform (via apt — for Debian-based distros)
 sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
 wget -O- https://apt.releases.hashicorp.com/gpg | \
 gpg --dearmor | \
@@ -25,13 +25,13 @@ sudo tee /etc/apt/sources.list.d/hashicorp.list
 sudo apt update
 sudo apt install terraform
 
-# Ansible
+# Install Ansible (via pip)
 python3 -m pip install ansible
 ```
 
-## Provision commands
+## Provision commands separating Terraform and Ansible
 ```sh
-M4S_DIR=`pwd`
+M4S_DIR=`pwd` # (optional) sets variable to this directory for readability purposes
 
 # Terraform Infra Provisioning
 cd $M4S_DIR/hcloud
@@ -40,32 +40,14 @@ terraform plan # check if resources are what you'd expect
 terraform apply
 
 # Ansible Configuration Management
+terraform apply -target=null_resource.ansible-configuration  # applies Terraform to a single resource
+# OR set up inventory from inventory.template and run:
 cd $M4S_DIR/server
 ansible-galaxy install -r requirements.yml
-ansible-playbook -i inventory main.yml
+ansible-playbook --private-key="$M4S_DIR/hcloud/ed_25519" -i inventory main.yml
 ```
 
-___
-___
 
-# TODO
+## Setting up CICD
+Current configuration creates a private SSH key (`hcloud/ed_25519`) that can be used to configure CICD.
 
-# WIP:
-setting up SSH keys for Ansible
-[Connection methods and details &mdash; Ansible Documentation](https://docs.ansible.com/ansible/latest/inventory_guide/connection_details.html#:~:text=Ansible%20precedence%20rules.-,Setting%20up%20SSH%20keys,%2D%2Dask%2Dbecome%2Dpass%20.)
-
-## Ansible configuration: 
-- install `nginx`, `docker`, `docker-compose`
-- start nginx
-- set up cicd:
-  - add github credentials to hetzner
-  - goal: it should be possible for a github action to ssh and run these deploy commands (script?)
-    - `cd to /apps, clone git repo if not exists`
-    - `cd into it, pull from git repo`
-    - `run docker-compose up -d --build`
-    - + adds nginx.conf file and restarts nginx service
-
-
-
-# Reference
-[Terraform Registry - Github SSH Key](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/user_ssh_key)

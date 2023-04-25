@@ -16,7 +16,7 @@
 
 ### 3 - Configure the inventory
 
-Copy the `inventory.example` to `inventory`, and change:
+Copy the `inventory.template` to `inventory`, and change:
 
   1. The server name under the `[m4s]` group to the domain name pointed at your new server.
   2. The value for `cert_admin_email` to an email address you control.
