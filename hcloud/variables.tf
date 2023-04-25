@@ -11,18 +11,6 @@ variable "hcloud_location" {
   default     = "hil"
 }
 
-variable "prefix" {
-  type        = string
-  description = "Prefix added to names of all resources"
-  default     = "quickstart"
-}
-
-variable "admin_email" {
-  type        = string
-  description = "Email of the admin to be configured for the SSL Certificate in the Ansible Playbook"
-  default     = "example@mail.com"
-}
-
 variable "network_cidr" {
   type        = string
   description = "Network to create for private communication"
@@ -51,6 +39,28 @@ variable "hcloud_image" {
   type        = string
   description = "System image to be used for all instances"
   default     = "ubuntu-22.04"
+}
+
+variable "cloudflare_token" {
+  type        = string
+  description = "Cloudflare API token used to add DNS records"
+}
+
+variable "cloudflare_zone_id" {
+  type        = string
+  description = "Cloudflare Zone ID"
+}
+
+variable "domain" {
+  type        = string
+  description = "Domain URL to point server to"
+  default     = "example.com"
+}
+
+variable "prefix" {
+  type        = string
+  description = "Prefix added to names of all resources"
+  default     = "quickstart"
 }
 
 # Local variables used to reduce repetition

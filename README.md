@@ -7,8 +7,11 @@ This server runs on a single Hetzner Cloud instance and hosts a blog, [m4s.dev](
 1. [Install Requirements](#requirements-installation)
    1. Terraform
    2. Ansible
-2. Set up Environment Variables: `hcloud/terraform.tfvars.example` --> `hcloud/terraform.tfvars`
-3. Run: `terraform init && terraform apply`
+2. Infrastructure Requirements
+   1. Hetzner Account, and API Token
+   2. Cloudflare Account, Zone, and API Token
+3. Set up Environment Variables: `hcloud/terraform.tfvars.example` --> `hcloud/terraform.tfvars`
+4. Run: `terraform init && terraform apply`
 
 
 ## Requirements Installation

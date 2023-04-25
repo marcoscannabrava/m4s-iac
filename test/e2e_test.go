@@ -15,7 +15,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/rand"
 )
 
-func TestE2E_m4sHcloud(t *testing.T) {
+func TestE2E_hcloud(t *testing.T) {
 	runTerraformAndVerify(t, "../hcloud")
 }
 
@@ -35,11 +35,11 @@ func runTerraformAndVerify(t *testing.T, terraformDir string) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	m4sServerURL := terraform.Output(t, terraformOptions, "m4s_server_url")
+	serverURL := terraform.Output(t, terraformOptions, "server_url")
 
 	http_helper.HttpGetWithRetryWithCustomValidation(
 		t,
-		m4sServerURL,
+		serverURL,
 		&tls.Config{
 			InsecureSkipVerify: true,
 		},
@@ -56,11 +56,11 @@ func runTerraformAndVerify(t *testing.T, terraformDir string) {
 
 	k8s.WaitUntilAllNodesReady(t, k8sOptions, 10, 5*time.Second)
 
-	m4sPods := k8s.ListPods(t, k8sOptions, metav1.ListOptions{})
+	pods := k8s.ListPods(t, k8sOptions, metav1.ListOptions{})
 
-	assert.Greater(t, len(m4sPods), 0)
+	assert.Greater(t, len(pods), 0)
 
-	for _, m4sPod := range m4sPods {
-		k8s.WaitUntilPodAvailable(t, k8sOptions, m4sPod.Name, 10, 5*time.Second)
+	for _, pod := range pods {
+		k8s.WaitUntilPodAvailable(t, k8sOptions, pod.Name, 10, 5*time.Second)
 	}
 }

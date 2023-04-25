@@ -35,7 +35,7 @@ resource "hcloud_ssh_key" "server_ssh_key" {
 }
 
 # Single HCloud VPS Instance
-resource "hcloud_server" "m4s_server" {
+resource "hcloud_server" "server" {
   name        = "${var.prefix}-server"
   image       = var.hcloud_image
   server_type = var.hcloud_server
@@ -51,23 +51,46 @@ resource "hcloud_server" "m4s_server" {
   ]
 }
 
+# Cloudflare DNS Records
+resource "cloudflare_record" "root" {
+  zone_id         = var.cloudflare_zone_id
+  name            = var.domain
+  value           = hcloud_server.server.ipv4_address
+  type            = "A"
+  ttl             = 1
+  proxied         = true
+  allow_overwrite = true
+  comment         = ""
+}
+
+resource "cloudflare_record" "www" {
+  zone_id         = var.cloudflare_zone_id
+  name            = "www.${var.domain}"
+  value           = hcloud_server.server.ipv4_address
+  type            = "A"
+  ttl             = 1
+  proxied         = true
+  allow_overwrite = true
+  comment         = ""
+}
+
 # Setup SSH Config — required for Ansible Step
 resource "null_resource" "ssh_setup" {
 
   triggers = {
-    prefix = var.prefix
-    host_ip = hcloud_server.m4s_server.ipv4_address
+    prefix  = var.prefix
+    host_ip = hcloud_server.server.ipv4_address
     ssh_key = tls_private_key.global_key.private_key_openssh
   }
 
   # Remove Host from known_hosts and Add Credentials to SSH Config
   provisioner "local-exec" {
     command = <<EOF
-ssh-keygen -f ~/.ssh/known_hosts -R ${hcloud_server.m4s_server.ipv4_address} &&
+ssh-keygen -f ~/.ssh/known_hosts -R ${hcloud_server.server.ipv4_address} &&
 cat <<EOT >> ~/.ssh/config
 
 Host ${var.prefix}
-  HostName ${hcloud_server.m4s_server.ipv4_address}
+  HostName ${hcloud_server.server.ipv4_address}
   User root
   IdentityFile ${abspath(path.module)}/${var.prefix}_id_rsa
   IdentitiesOnly yes
@@ -87,10 +110,8 @@ resource "null_resource" "ansible_configuration" {
   provisioner "local-exec" {
     working_dir = "../server"
     command     = <<EOF
-sed -e 's/host_prefix/${var.prefix}/' \
--e 's/host_ip/${hcloud_server.m4s_server.ipv4_address}/' \
+sed -e 's/host_ip/${hcloud_server.server.ipv4_address}/' \
 -e 's/host_user/${local.node_username}/' \
--e 's/host_admin_email/${var.admin_email}/' \
 inventory.template > inventory
 EOF
   }

@@ -27,8 +27,7 @@ vagrant/local_config.yaml
 
 # SSH keys
 *ed_25519*
-*.pk
-*.pub
+*id_rsa*
 
 # scratchpad files
 .scratch
