@@ -1,6 +1,6 @@
 # HCloud infrastructure resources
 
-# Create SSH Key --- BEGIN
+# Create SSH Key
 resource "tls_private_key" "global_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -16,7 +16,6 @@ resource "local_file" "ssh_public_key_openssh" {
   filename = "${path.module}/${var.prefix}.pub"
   content  = tls_private_key.global_key.public_key_openssh
 }
-# Create SSH Key --- END
 
 resource "hcloud_network" "private" {
   name     = "${var.prefix}-private-network"
@@ -30,7 +29,6 @@ resource "hcloud_network_subnet" "private" {
   ip_range     = var.network_ip_range
 }
 
-# Temporary key pair used for SSH accesss
 resource "hcloud_ssh_key" "server_ssh_key" {
   name       = "${var.prefix}-instance-ssh-key"
   public_key = tls_private_key.global_key.public_key_openssh
@@ -74,6 +72,21 @@ resource "null_resource" "ansible_configuration" {
   triggers = {
     always_run = "${timestamp()}"
   }
+
+  # Add Host to SSH Config
+    provisioner "local-exec" {
+      command = <<EOF
+cat <<EOT >> ~/.ssh/config
+
+Host ${var.prefix}
+  HostName ${hcloud_server.m4s_server.ipv4_address}
+  User root
+  IdentityFile ${path.module}/${var.prefix}.pk
+  IdentitiesOnly yes
+EOT
+EOF
+    }
+
 
   # Prepare Ansible Inventory
   provisioner "local-exec" {
