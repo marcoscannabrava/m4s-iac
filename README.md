@@ -1,6 +1,8 @@
 # IaC repo for m4s server on Hetzner
 
-This server runs on a single Hetzner Cloud instance and hosts a blog, [m4s.dev](https://m4s.dev/), and a few other apps.
+This is the IaC (Infrastructure as Code) repo for my personal server that runs on a single Hetzner Cloud instance and hosts a blog, [m4s.dev](https://m4s.dev/), and a few other apps.
+
+It spins up one Hetzner Cloud box running Ubuntu, installs Docker, configures its firewall, DNS records on Cloudflare, and sets up the local SSH configuration to connect to the new host.
 
 # Quickstart
 
@@ -11,8 +13,7 @@ This server runs on a single Hetzner Cloud instance and hosts a blog, [m4s.dev](
    1. Hetzner Account, and API Token
    2. Cloudflare Account, Zone, and API Token
 3. Set up Environment Variables: `hcloud/terraform.tfvars.example` --> `hcloud/terraform.tfvars`
-4. Run: `terraform init && terraform apply`
-
+4. Run: `cd hcloud && terraform init && terraform apply`
 
 ## Requirements Installation
 ```sh
@@ -32,14 +33,16 @@ sudo apt install terraform
 python3 -m pip install ansible
 ```
 
-## Provision commands separating Terraform and Ansible
+___
+
+## Breakdown of provision commands: Terraform and Ansible
 ```sh
 M4S_DIR=`pwd` # (optional) sets variable to this directory for readability purposes
 
 # Terraform Infra Provisioning
 cd $M4S_DIR/hcloud
 terraform init
-terraform plan # check if resources are what you'd expect
+terraform plan
 terraform apply
 
 # Ansible Configuration Management
@@ -47,10 +50,5 @@ terraform apply -target=null_resource.ansible-configuration  # applies Terraform
 # OR set up inventory from inventory.template and run:
 cd $M4S_DIR/server
 ansible-galaxy install -r requirements.yml
-ansible-playbook --private-key="$M4S_DIR/hcloud/ed_25519" -i inventory main.yml
+ansible-playbook --private-key="$M4S_DIR/hcloud/id_rsa" -i inventory main.yml
 ```
-
-
-## Setting up CICD
-Current configuration creates a private SSH key (`hcloud/ed_25519`) that can be used to configure CICD.
-
