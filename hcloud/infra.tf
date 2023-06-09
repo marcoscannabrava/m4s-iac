@@ -61,6 +61,7 @@ resource "cloudflare_record" "root" {
   proxied         = true
   allow_overwrite = true
   comment         = ""
+  tags            = []
 }
 
 resource "cloudflare_record" "www" {
@@ -72,6 +73,7 @@ resource "cloudflare_record" "www" {
   proxied         = true
   allow_overwrite = true
   comment         = ""
+  tags            = []
 }
 
 # Setup SSH Config — required for Ansible Step
