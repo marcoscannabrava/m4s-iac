@@ -1,36 +1,27 @@
 PROVIDERS = hcloud
-CLOUD_PROVIDERS = hcloud
 
-upgrade-targets = $(addprefix upgrade-, $(PROVIDERS))
-docs-targets = $(addprefix docs-, $(PROVIDERS))
-tfvars-targets = $(addprefix tfvars-, $(PROVIDERS))
-fmt-targets = $(addprefix fmt-, $(PROVIDERS))
-validate-targets = $(addprefix validate-, $(PROVIDERS))
-plan-targets = $(addprefix plan-, $(CLOUD_PROVIDERS))
+targets = $(PROVIDERS)
 
-upgrade: $(upgrade-targets)
-$(upgrade-targets): upgrade-%: %
+upgrade: $(targets)
 	cd $< && terraform init -upgrade
 
-docs: $(docs-targets)
-$(docs-targets): docs-%: %
+docs: $(targets)
 	cd $< && terraform-docs -c ../.terraform-docs-readme.yml .
 
-tfvars: $(tfvars-targets)
-$(tfvars-targets): tfvars-%: %
+tfvars: $(targets)
 	cd $< && terraform-docs -c ../.terraform-docs-tfvars.yml .
 
-fmt: $(fmt-targets)
-$(fmt-targets): fmt-%: %
+fmt: $(targets)
 	cd $< && terraform fmt
 
-validate: $(validate-targets)
-$(validate-targets): validate-%: %
+validate: $(targets)
 	cd $< && terraform validate
 
-plan: $(plan-targets)
-$(plan-targets): plan-%: %
+plan: $(targets)
 	cd $< && terraform plan
+
+apply: $(targets)
+	cd $< && terraform apply
 
 .PHONY: test
 test:

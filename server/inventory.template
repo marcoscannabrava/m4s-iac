@@ -3,3 +3,4 @@ host_ip
 
 [main:vars]
 ansible_user=host_user
+cert_admin_email=youremail.com
