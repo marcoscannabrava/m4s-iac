@@ -37,6 +37,9 @@ ___
 
 ## Breakdown of provision commands: Terraform and Ansible
 ```sh
+make apply # simple quickstart --> runs terraform and ansible
+
+# OR
 M4S_DIR=`pwd` # (optional) sets variable to this directory for readability purposes
 
 # Terraform Infra Provisioning
@@ -51,4 +54,45 @@ terraform apply -target=null_resource.ansible-configuration  # applies Terraform
 cd $M4S_DIR/server
 ansible-galaxy install -r requirements.yml
 ansible-playbook --private-key="$M4S_DIR/hcloud/id_rsa" -i inventory main.yml
+```
+
+# Note
+
+📝 There is a known bug with the Cloudflare Terraform Provider. To work around it, it might be necessary to comment out or uncomment the `tags` property in the DNS resources as needed to apply/destroy the configuration.
+
+
+# Deployment
+
+Build app in server, create an NGINX file with one of the following configurations and run `nginx -s reload`.
+
+```nginx
+# to serve multiplw web servers
+server {
+    listen 80;
+    server_name app1.m4s.dev;
+
+    location / {
+        proxy_pass http://localhost:8000;
+    }
+}
+
+server {
+    listen 80;
+    server_name app2.m4s.dev;
+
+    location / {
+        proxy_pass http://localhost:8001;
+    }
+}
+
+# to serve static files
+server {
+    listen 80;
+    server_name blog.m4s.dev;
+
+    location / {
+        root /path/to/folder;
+        try_files $uri $uri.html $uri/ /fallback/index.html;
+    }
+}
 ```

@@ -23,6 +23,9 @@ plan: $(targets)
 apply: $(targets)
 	cd $< && terraform apply
 
+destroy: $(targets)
+	cd $< && terraform destroy
+
 .PHONY: test
 test:
 	cd test/ && go test -v -timeout 45m
