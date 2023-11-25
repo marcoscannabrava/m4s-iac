@@ -4,6 +4,13 @@ This is the IaC (Infrastructure as Code) repo for my personal server that runs o
 
 It spins up one Hetzner Cloud box running Ubuntu, installs Docker, configures its firewall, DNS records on Cloudflare, and sets up the local SSH configuration to connect to the new host.
 
+# Overview
+1. Terraform `hcloud/infra.tf` sets up all necessary resources and outputs the VPS IP triggering the Ansible playbook
+   1. Local: SSH key
+   2. Hetzner Cloud: Network, Subnet, VPS
+   3. Cloudflare: DNS records
+2. Ansible `server/main.yml` sets up NGNIX, firewall and docker in the Hetzner box
+
 # Quickstart
 
 1. [Install Requirements](#requirements-installation)

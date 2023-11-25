@@ -1,5 +1,3 @@
-# HCloud infrastructure resources
-
 # Create SSH Key
 resource "tls_private_key" "global_key" {
   algorithm = "RSA"
@@ -17,6 +15,7 @@ resource "local_file" "ssh_public_key_openssh" {
   content  = tls_private_key.global_key.public_key_openssh
 }
 
+# Create Hetzner Cloud Resources: Network, Subnet, VPS
 resource "hcloud_network" "private" {
   name     = "${var.prefix}-private-network"
   ip_range = var.network_cidr
